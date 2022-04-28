@@ -58,6 +58,7 @@ const menuQuestion = () => {
     })
 
 }
+//Function to run for further inquirer prompts and to add new department
 const addDepartment = () => {
     return inquirer.prompt([
         {
@@ -75,7 +76,7 @@ const addDepartment = () => {
         console.log(response)
     })
 }
-
+//Function to run for further inquirer prompts and to add new role
 const addRole = () => {
     return inquirer.prompt([
         {
@@ -108,6 +109,7 @@ const addRole = () => {
         console.log(responses)
     })
 }
+//Function to run for further inquirer prompts and to add new employee
 const addEmployee = () => {
     return inquirer.prompt([
         {
@@ -146,6 +148,7 @@ const addEmployee = () => {
         console.log(responses)
     })
 }
+//Function to run for further inquirer prompts and to update the employee's role by id number
 const updateRole = () => {
     return inquirer.prompt([
         {
