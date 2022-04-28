@@ -1,6 +1,6 @@
 const inquirer = require('inquirer');
 const db = require('./db/connection');
-const express = require ('express');
+const express = require('express');
 const router = express.Router();
 const sql = require('mysql2')
 
@@ -18,13 +18,28 @@ const menuQuestion = () => {
     ]).then(response => {
         switch (response.function) {
             case 'view all departments':
-                //insert function to display table here
+                db.query(`SELECT * from department`, (err, result) => {
+                    if (err) {
+                        console.log(err);
+                    }
+                    console.table(result);
+                });
                 break;
             case 'view all roles':
-                 //insert function to display roles
+                db.query(`SELECT * from role`, (err, result) => {
+                    if (err) {
+                        console.log(err);
+                    }
+                    console.table(result);
+                });
                 break;
             case 'view all employees':
-                //insert function to display employees
+                db.query(`SELECT * from employee`, (err, result) => {
+                    if (err) {
+                        console.log(err);
+                    }
+                    console.table(result);
+                });
                 break;
             case 'add a department':
                 addDepartment();
@@ -44,19 +59,25 @@ const menuQuestion = () => {
 
 }
 const addDepartment = () => {
-    return inquirer.prompt ([
+    return inquirer.prompt([
         {
             type: "input",
             name: "department_name",
             message: "What is the name of the new department?"
         }
     ]).then(response => {
+        db.query(`INSERT INTO department SET ?`, { name: response.department_name }, (err, result) => {
+            if (err) {
+                console.log(err);
+            }
+            console.table(result);
+        });
         console.log(response)
     })
 }
 
 const addRole = () => {
-    return inquirer.prompt ([
+    return inquirer.prompt([
         {
             type: "input",
             name: "role_title",
@@ -73,11 +94,22 @@ const addRole = () => {
             message: "What is the department id of the new role? Type in a number. 1=sales, 2=IT, 3=marketing, 4=HR"
         }
     ]).then(responses => {
+        db.query(`INSERT INTO role SET ?`,
+            {
+                title: responses.role_title,
+                salary: responses.salary,
+                department_id: responses.department_id,
+            }, (err, result) => {
+                if (err) {
+                    console.log(err);
+                }
+                console.log(result);
+            });
         console.log(responses)
     })
 }
 const addEmployee = () => {
-    return inquirer.prompt ([
+    return inquirer.prompt([
         {
             type: "input",
             name: "first_name",
@@ -99,11 +131,23 @@ const addEmployee = () => {
             message: "Type the number that corresponds to this employee's manager id."
         }
     ]).then(responses => {
+        db.query(`INSERT INTO employee SET ?`,
+            {
+                first_name: responses.first_name,
+                last_name: responses.last_name,
+                role_id: responses.role_id,
+                manager_id: responses.manager_id
+            }, (err, result) => {
+                if (err) {
+                    console.log(err);
+                }
+                console.log(result);
+            });
         console.log(responses)
     })
 }
 const updateRole = () => {
-    return inquirer.prompt ([
+    return inquirer.prompt([
         {
             type: "input",
             name: "employeenum",
@@ -115,6 +159,13 @@ const updateRole = () => {
             message: "What is the new role number for this employee? Please type a number. 1=Senior Sales, 2=Junior Sales, 3=Senior IT, 4=Junior IT, 5=Senior Marketing, 6=Junior Marketing, 7=HR Manager, 8=HR Staff, 9=Accountant"
         }
     ]).then(responses => {
+        db.query(`UPDATE employee SET role_id = ${responses.rolenum} WHERE id = ${responses.employeenum}; `,
+             (err, result) => {
+                if (err) {
+                    console.log(err);
+                }
+                console.log(result);
+            });
         console.log(responses)
     })
 }
